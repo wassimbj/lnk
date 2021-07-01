@@ -29,7 +29,6 @@ func AppendToFile(f *os.File, data string) error {
 
 func GetTitleOfLink(url string) (string, int) {
 	resp, err := http.Get(url)
-
 	if err != nil {
 		return "", 500
 	}
@@ -42,23 +41,25 @@ func GetTitleOfLink(url string) (string, int) {
 
 	scanner := bufio.NewScanner(resp.Body)
 
-	// title tag is always found on the first 10 lines
+	// searching the first 100 lines for the title
 	var title string
 	for i := 0; scanner.Scan() && i < 100; i++ {
-		if strings.Index(scanner.Text(), "<title>") != -1 {
+		// fmt.Println(scanner.Text())
+		if strings.Index(scanner.Text(), "<title") != -1 {
 			title = scanner.Text()
 			break
 		}
 	}
-
 	if title == "" {
 		return "", 202
 	}
 
-	idxOfTitle := strings.Index(title, "<title>")
 	idxOfCloseTitle := strings.Index(title, "</title>")
-	// 7 = len(<title>)
-	pureTitle := title[idxOfTitle+7 : idxOfCloseTitle]
+	// <title> can have attrs so we are only searching for the first letters of the tag
+	idxOfTitle := strings.Index(title, "<title")
+	idxOfOnlyTitle := strings.Index(title[idxOfTitle:idxOfCloseTitle], ">") + 1
+
+	pureTitle := title[idxOfTitle+idxOfOnlyTitle : idxOfCloseTitle]
 
 	return strings.TrimSpace(pureTitle), 200
 
