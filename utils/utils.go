@@ -2,7 +2,6 @@ package utils
 
 import (
 	"bufio"
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -52,17 +51,14 @@ func GetTitleOfLink(url string) (string, int) {
 		}
 	}
 
-	fmt.Print(title)
-
 	if title == "" {
 		return "", 202
 	}
 
-	// idxOfTitle := strings.Index(title, "<title>")
-	// idxOfCloseTitle := strings.Index(title, "</title>")
+	idxOfTitle := strings.Index(title, "<title>")
+	idxOfCloseTitle := strings.Index(title, "</title>")
 	// 7 = len(<title>)
-	// pureTitle := title[idxOfTitle+7 : idxOfCloseTitle]
-	pureTitle := ""
+	pureTitle := title[idxOfTitle+7 : idxOfCloseTitle]
 
 	return strings.TrimSpace(pureTitle), 200
 
