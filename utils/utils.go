@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -28,15 +29,17 @@ func AppendToFile(f *os.File, data string) error {
 }
 
 func GetTitleOfLink(url string) (string, int) {
-	resp, _ := http.Get(url)
+	resp, err := http.Get(url)
+
+	if err != nil {
+		return "", 500
+	}
+
+	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
 		return "", resp.StatusCode
 	}
-
-	// if resp.StatusCode == 404 {
-	// 	return "", 404
-	// }
 
 	scanner := bufio.NewScanner(resp.Body)
 
@@ -49,14 +52,17 @@ func GetTitleOfLink(url string) (string, int) {
 		}
 	}
 
+	fmt.Print(title)
+
 	if title == "" {
 		return "", 202
 	}
 
-	idxOfTitle := strings.Index(title, "<title>")
-	idxOfCloseTitle := strings.Index(title, "</title>")
+	// idxOfTitle := strings.Index(title, "<title>")
+	// idxOfCloseTitle := strings.Index(title, "</title>")
 	// 7 = len(<title>)
-	pureTitle := title[idxOfTitle+7 : idxOfCloseTitle]
+	// pureTitle := title[idxOfTitle+7 : idxOfCloseTitle]
+	pureTitle := ""
 
 	return strings.TrimSpace(pureTitle), 200
 
