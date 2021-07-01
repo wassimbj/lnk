@@ -21,4 +21,8 @@ lnk <new|list> [url]
       
 ```
 
+### Preview
+
+![GitHub Logo](/static/lnk-usage.gif)
+
 

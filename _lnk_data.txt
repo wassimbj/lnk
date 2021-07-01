@@ -1,2 +1,1 @@
 https://medium.com/rungo/working-in-go-workspace-3b0576e0534a ~~ Getting started with Go. Installing Go on your system, setting… | by Uday Hiwarale | RunGo | Medium
-https://github.com ~~ GitHub: Where the world builds software · GitHub
