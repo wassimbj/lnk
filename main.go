@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/fatih/color"
@@ -38,6 +40,21 @@ const (
 
 func main() {
 	args := os.Args[1:]
+	var dataFilePath string
+	var homeDir, err = os.UserHomeDir()
+	if err != nil {
+		utils.PrintMsg("Can't get the User Home Dir")
+	}
+
+	// create lnk dir in the user home dir if it does not exist
+	if _, err := os.Stat(path.Join(homeDir, "lnk")); os.IsNotExist(err) {
+		os.Mkdir(path.Join(homeDir, "lnk"), fs.FileMode(os.O_APPEND|os.O_RDONLY|os.O_CREATE))
+	}
+
+	dataFilePath = path.Join(homeDir, "lnk", dataFileName)
+
+	// fmt.Print(dataFilePath)
+	// dataFilePath := dirname
 
 	switch args[0] {
 	case "new":
@@ -72,7 +89,7 @@ func main() {
 			}
 		}
 
-		f, ferr := utils.OpenFile(dataFileName)
+		f, ferr := utils.OpenFile(dataFilePath)
 		if ferr != nil {
 			utils.PrintMsg("error", "\t Error when opening the data file, %s", ferr.Error())
 			os.Exit(1)
@@ -88,7 +105,7 @@ func main() {
 		utils.PrintMsg("success", "\t Success ! Link is saved")
 
 	case "list":
-		f, _ := os.Open(dataFileName)
+		f, _ := os.Open(dataFilePath)
 		defer f.Close()
 		scanner := bufio.NewScanner(f)
 		var i = 0
