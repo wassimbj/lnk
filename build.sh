@@ -23,6 +23,8 @@ platforms=(
 # build dir will contain the compressed executable build 
 if [[ -n "build" ]]; then
    mkdir build
+   # remove existing builds
+   rm ./build/lnk*
 fi
 
 for platform in "${platforms[@]}"
@@ -51,10 +53,10 @@ do
       tar -a -c -f "$z_output_name.tar" $output_name
       gzip "$z_output_name.tar"
       rm "$z_output_name.tar"
-      if [[ -e "./build/$z_output_name.tar.gz" ]]; then
-         echo "Remove existing build..."
-         rm "./build/$z_output_name.tar.gz"
-      fi
+      # if [[ -e "./build/$z_output_name.tar.gz" ]]; then
+      #    echo "Remove existing build..."
+      #    rm "./build/$z_output_name.tar.gz"
+      # fi
       echo "Moving to the build dir..."
       mv "$z_output_name.tar.gz" build
       rm $output_name
@@ -65,10 +67,10 @@ do
       else
          zip "$z_output_name.zip" $output_name
       fi
-      if [[ -e "./build/$z_output_name.zip" ]]; then
-         echo "Remove existing build..."
-         rm "./build/$z_output_name.zip"
-      fi
+      # if [[ -e "./build/$z_output_name.zip" ]]; then
+      #    echo "Remove existing build..."
+      #    rm "./build/$z_output_name.zip"
+      # fi
       echo "Moving to the build dir..."
       mv "$z_output_name.zip" build
       rm $output_name
