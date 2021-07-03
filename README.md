@@ -28,3 +28,6 @@ lnk <new|list> [url]
 ![Preview](/static/lnk-usage.gif)
 
 
+### Download
+
+[Download based on your OS](https://github.com/wassimbj/lnk/releases/tag/v0.8.1)
