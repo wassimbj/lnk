@@ -30,4 +30,4 @@ lnk <new|list> [url]
 
 ### Download
 
-[Download based on your OS](https://github.com/wassimbj/lnk/releases/tag/v0.8.1)
+[Download based on your OS](https://github.com/wassimbj/lnk/releases/tag/v0.9.1)
