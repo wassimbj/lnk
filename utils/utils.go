@@ -3,6 +3,7 @@ package utils
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"io/fs"
 	"net/http"
 	"os"
@@ -33,6 +34,8 @@ func AppendToFile(f *os.File, data string) error {
 
 func GetLinkTitle(url string) (string, int) {
 	resp, err := http.Get(url)
+
+	// fmt.Print(resp.Status)
 	if err != nil {
 		return "", 500
 	}
@@ -54,6 +57,8 @@ func GetLinkTitle(url string) (string, int) {
 			break
 		}
 	}
+
+	fmt.Print(title)
 	if title == "" {
 		return "", 202
 	}
@@ -97,14 +102,16 @@ func PrintMsg(typ string, msg ...interface{}) {
 	error := color.New(color.Bold, color.FgHiRed).PrintlnFunc()
 
 	if typ == "success" {
-		success("\n --------------------------------------------------------------------- \n")
+		fmt.Print("\n\n")
+		success("---------------------------------------------------------------------")
 		success(msg...)
-		success("\n --------------------------------------------------------------------- \n")
+		success("---------------------------------------------------------------------")
 		return
 	} else if typ == "error" {
-		error("\n --------------------------------------------------------------------- \n")
+		fmt.Print("\n\n")
+		error("---------------------------------------------------------------------")
 		error(msg...)
-		error("\n --------------------------------------------------------------------- \n")
+		error("---------------------------------------------------------------------")
 		return
 	}
 

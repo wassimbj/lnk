@@ -60,7 +60,7 @@ func main() {
 		err := cli.NewLnk(link, dataFilePath)
 
 		if err != nil {
-			utils.PrintMsg(err.Error())
+			utils.PrintMsg("error", err.Error())
 			os.Exit(1)
 		}
 

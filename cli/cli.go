@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/fatih/color"
@@ -19,8 +20,8 @@ func NewLnk(link, dataFilePath string) error {
 
 	// if title is not found or there is no internet connection to make the request
 	if status > 202 || title == "" {
-		utils.PrintMsg("error", "\t We couldn't find the title of this link")
-		color.Cyan("\n Write something and press double ENTER to move on: \n")
+		utils.PrintMsg("error", fmt.Sprintf("Can't get title (HTTP ERROR) Status Code: %s", fmt.Sprint(status)+" "+http.StatusText(status)))
+		color.Cyan("\n What this link is talking about ? (press Double Enter to move on): \n")
 		fmt.Scan(&title)
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
