@@ -1,3 +1,5 @@
 /build
 lnk.exe
 _lnk_data.txt
+
+/test/*.txt

@@ -4,12 +4,11 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"io/fs"
 	"os"
-	"path"
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/wassimbj/lnk/cli"
 	"github.com/wassimbj/lnk/utils"
 )
 
@@ -40,18 +39,12 @@ const (
 
 func main() {
 	args := os.Args[1:]
-	var dataFilePath string
-	var homeDir, err = os.UserHomeDir()
-	if err != nil {
-		utils.PrintMsg("Can't get the User Home Dir")
-	}
 
-	// create lnk dir in the user home dir if it does not exist
-	if _, err := os.Stat(path.Join(homeDir, "lnk")); os.IsNotExist(err) {
-		os.Mkdir(path.Join(homeDir, "lnk"), fs.FileMode(os.O_APPEND|os.O_RDONLY|os.O_CREATE))
+	dataFilePath, dpError := utils.GetDataFilePath(dataFileName)
+	if dpError != nil {
+		utils.PrintMsg(dpError.Error())
+		os.Exit(1)
 	}
-
-	dataFilePath = path.Join(homeDir, "lnk", dataFileName)
 
 	switch args[0] {
 	case "new":
@@ -64,45 +57,17 @@ func main() {
 			color.Red("\n\n %s \n\n", invalidLink.Error())
 			os.Exit(1)
 		}
+		err := cli.NewLnk(link, dataFilePath)
 
-		var title, status = utils.GetTitleOfLink(link)
-
-		if status == 404 {
-			utils.PrintMsg("error", "\t 404 ERROR, page not found")
+		if err != nil {
+			utils.PrintMsg(err.Error())
 			os.Exit(1)
 		}
 
-		// if title is not found or there is no internet connection to make the request
-		if status > 202 || title == "" {
-			utils.PrintMsg("error", "\t We couldn't find the title of this link")
-			color.Cyan("\n Write something and press double ENTER to move on: \n")
-			fmt.Scan(&title)
-			scanner := bufio.NewScanner(os.Stdin)
-			for scanner.Scan() {
-				title = title + " " + scanner.Text()
-				if scanner.Text() == "" {
-					break
-				}
-			}
-		}
-
-		f, ferr := utils.OpenFile(dataFilePath)
-		if ferr != nil {
-			utils.PrintMsg("error", "\t Error when opening the data file, %s", ferr.Error())
-			os.Exit(1)
-		}
-
-		// the "~~" separate the link from the title
-		data := link + " ~~ " + title
-		saveErr := utils.AppendToFile(f, data)
-		if saveErr != nil {
-			utils.PrintMsg("error", "We couldn't save the link, ERROR: %s", saveErr.Error())
-			os.Exit(1)
-		}
 		utils.PrintMsg("success", "\t Success ! Link is saved")
 
 	case "list":
-		f, _ := os.Open(dataFilePath)
+		f, _ := utils.OpenFile(dataFilePath, os.O_RDONLY)
 		defer f.Close()
 		scanner := bufio.NewScanner(f)
 		var i = 0

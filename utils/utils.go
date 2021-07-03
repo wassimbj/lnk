@@ -2,17 +2,21 @@ package utils
 
 import (
 	"bufio"
+	"errors"
+	"io/fs"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/fatih/color"
 )
 
 // create it of it doesn't exist
-func OpenFile(name string) (*os.File, error) {
+func OpenFile(name string, perms int) (*os.File, error) {
 	// perms = os.O_APPEND|os.O_CREATE|os.O_WRONLY
-	f, err := os.OpenFile(name, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	// os.O_APPEND|os.O_CREATE|os.O_WRONLY|os.O_RDONLY
+	f, err := os.OpenFile(name, perms, 0644)
 
 	return f, err
 }
@@ -27,7 +31,7 @@ func AppendToFile(f *os.File, data string) error {
 
 }
 
-func GetTitleOfLink(url string) (string, int) {
+func GetLinkTitle(url string) (string, int) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", 500
@@ -62,6 +66,28 @@ func GetTitleOfLink(url string) (string, int) {
 	pureTitle := title[idxOfTitle+idxOfOnlyTitle : idxOfCloseTitle]
 
 	return strings.TrimSpace(pureTitle), 200
+
+}
+
+func GetDataFilePath(dataFileName string) (string, error) {
+	var dataFilePath string
+	var homeDir, err = os.UserHomeDir()
+	if err != nil {
+		return "", errors.New("Can't get the User Home Dir")
+	}
+
+	// create lnk dir in the user home dir if it does not exist
+	if _, err := os.Stat(path.Join(homeDir, "lnk")); os.IsNotExist(err) {
+		mkdirErr := os.Mkdir(path.Join(homeDir, "lnk"), fs.FileMode(os.O_APPEND|os.O_RDONLY|os.O_CREATE))
+
+		if mkdirErr != nil {
+			return "", mkdirErr
+		}
+	}
+
+	dataFilePath = path.Join(homeDir, "lnk", dataFileName)
+
+	return dataFilePath, nil
 
 }
 
