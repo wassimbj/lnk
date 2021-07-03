@@ -53,9 +53,6 @@ func main() {
 
 	dataFilePath = path.Join(homeDir, "lnk", dataFileName)
 
-	// fmt.Print(dataFilePath)
-	// dataFilePath := dirname
-
 	switch args[0] {
 	case "new":
 		if len(args) <= 1 {
