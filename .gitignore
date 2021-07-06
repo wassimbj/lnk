@@ -1,4 +1,6 @@
 /build
+build.sh
+
 lnk.exe
 _lnk_data.txt
 
