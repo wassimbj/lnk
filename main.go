@@ -20,6 +20,7 @@ var (
 
 const (
 	dataFileName = "_lnk_data.txt"
+	limit        = 4
 	usage        = `
 
 	lnk <new|list> [url]
@@ -71,11 +72,10 @@ func main() {
 		defer f.Close()
 		scanner := bufio.NewScanner(f)
 		var i = 0
-		var max = 2
+		var max = limit
 
 		// var moreMsg string
 		color.New(color.BlinkSlow, color.Bold, color.BgHiGreen).Print("\n Saved Links \n")
-		// moreMsg = "> more..."
 		for i = 0; i < max && scanner.Scan(); i++ {
 			// formatting the display
 			if i == 0 {
@@ -96,7 +96,7 @@ func main() {
 				fmt.Print("> more...")
 				input, _ := consoleReader.ReadByte()
 				if input == 13 {
-					max += 2
+					max += limit
 				}
 			}
 		}
