@@ -15,8 +15,8 @@ import (
 
 // create it of it doesn't exist
 func OpenFile(name string, perms int) (*os.File, error) {
-	// perms = os.O_APPEND|os.O_CREATE|os.O_WRONLY
-	// os.O_APPEND|os.O_CREATE|os.O_WRONLY|os.O_RDONLY
+	// perms = os.O_APPEND|os.O_CREATE|os.O_WRONLY|os.O_RDONLY
+	// 0644 => - rw- r-- r--
 	f, err := os.OpenFile(name, perms, 0644)
 
 	return f, err
@@ -24,11 +24,15 @@ func OpenFile(name string, perms int) (*os.File, error) {
 
 func AppendToFile(f *os.File, data string) error {
 	defer f.Close()
-	if _, err := f.WriteString(data + "\n"); err != nil {
+	if _, err := f.WriteString(data); err != nil {
 		return err
 	}
 
 	return nil
+
+}
+
+func DelFileLine(f *os.File, data string) {
 
 }
 
@@ -58,7 +62,7 @@ func GetLinkTitle(url string) (string, int) {
 		}
 	}
 
-	fmt.Print(title)
+	// fmt.Println("Title: ", title)
 	if title == "" {
 		return "", 202
 	}

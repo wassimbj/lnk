@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -14,28 +15,24 @@ import (
 
 var (
 	invalidNumOfParams = errors.New("Expetced at least 2 params")
-	invalidSubCmds     = errors.New("expected 'new' or 'list' subcommands")
+	invalidSubCmds     = errors.New("invalid subcommands")
 	invalidLink        = errors.New("invalid link")
 )
 
 const (
 	dataFileName = "_lnk_data.txt"
 	limit        = 4
+	separator    = "~~"
 	usage        = `
+lnk <new | list | del> [url]
 
-	lnk <new|list> [url]
+	* new <url>: creates a new link
 
-		- new: creates a new link
+	* list: Lists the saved links
 
-			url: required params, which is the actual url of the page you want to save
+	* del <url>: remove a saved link
 
-			e.g: lnk new https://cool-blog/go-generics-is-out-(joke)
-			
-
-		- list: Lists the saved links
-
-			click <ENTER> to show more links
-	`
+`
 )
 
 func main() {
@@ -72,16 +69,16 @@ func main() {
 		defer f.Close()
 		scanner := bufio.NewScanner(f)
 		var i = 0
-		var max = limit
 
-		// var moreMsg string
 		color.New(color.BlinkSlow, color.Bold, color.BgHiGreen).Print("\n Saved Links \n")
-		for i = 0; i < max && scanner.Scan(); i++ {
+		for i = 0; scanner.Scan(); i++ {
 			// formatting the display
 			if i == 0 {
 				fmt.Print("\n\n")
 			}
-			idxOfSep := strings.Index(scanner.Text(), "~~")
+
+			// separate the link and title (link description)
+			idxOfSep := strings.Index(scanner.Text(), separator)
 			link := scanner.Text()[0 : idxOfSep-1]
 			title := scanner.Text()[idxOfSep+3:]
 
@@ -91,15 +88,36 @@ func main() {
 			color.New(color.FgHiMagenta, color.Italic).Printf("\n\n * %s \n", title)
 			color.New(color.CrossedOut, color.FgHiBlack).Println("-----------------------------------------------------------------")
 
-			if i == max-1 {
-				consoleReader := bufio.NewReaderSize(os.Stdin, 1)
-				fmt.Print("> more...")
-				input, _ := consoleReader.ReadByte()
-				if input == 13 {
-					max += limit
-				}
+		}
+
+	case "del":
+		if len(args) <= 1 {
+			utils.PrintMsg("error", "\t %s", invalidNumOfParams.Error())
+			os.Exit(1)
+		}
+
+		link := args[1]
+
+		fileContent, _ := ioutil.ReadFile(dataFilePath)
+		// find the link to delete and remove it from the array
+		dataArr := strings.Split(string(fileContent), "\n")
+		for i := 0; i < len(dataArr); i++ {
+			lnk := strings.Split(dataArr[i], separator)
+			if strings.TrimSpace(lnk[0]) == strings.TrimSpace(link) {
+				dataArr = append(dataArr[:i], dataArr[i+1:]...)
 			}
 		}
+
+		// re-write the file with the new data
+		newData := strings.Join(dataArr, "\n")
+		fmt.Println(newData)
+		f, _ := utils.OpenFile(dataFilePath, os.O_WRONLY|os.O_TRUNC)
+
+		if err := utils.AppendToFile(f, newData); err != nil {
+			utils.PrintMsg("error", "Can't delete the link, Error: "+err.Error())
+		}
+
+		utils.PrintMsg("success", "Success link has been removed")
 
 	case "usage":
 		fmt.Printf("\n %s \n", usage)

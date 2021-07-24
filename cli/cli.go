@@ -18,9 +18,9 @@ func NewLnk(link, dataFilePath string) error {
 		return errors.New("404 ERROR, page not found")
 	}
 
-	// if title is not found or there is no internet connection to make the request
+	// if title is not found or something went wrong
 	if status > 202 || title == "" {
-		utils.PrintMsg("error", fmt.Sprintf("Can't get title (HTTP ERROR) Status Code: %s", fmt.Sprint(status)+" "+http.StatusText(status)))
+		utils.PrintMsg("error", fmt.Sprintf("Can't get the title, (HTTP ERROR) Status Code: %s", fmt.Sprint(status)+" "+http.StatusText(status)))
 		color.Cyan("\n What this link is talking about ? (press Double Enter to move on): \n")
 		fmt.Scan(&title)
 		scanner := bufio.NewScanner(os.Stdin)
@@ -39,7 +39,7 @@ func NewLnk(link, dataFilePath string) error {
 
 	// the "~~" separate the link from the title
 	data := link + " ~~ " + title
-	saveErr := utils.AppendToFile(f, data)
+	saveErr := utils.AppendToFile(f, data+"\n")
 	if saveErr != nil {
 		return errors.New(saveErr.Error())
 	}
