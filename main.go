@@ -104,9 +104,7 @@ func main() {
 		dataArr := strings.Split(string(fileContent), "\n")
 		for i := 0; i < len(dataArr); i++ {
 			linkIdInt, _ := strconv.Atoi(linkId)
-			fmt.Println(i, linkIdInt)
 			if i+1 == linkIdInt {
-				fmt.Println("YYY")
 				dataArr = append(dataArr[:i], dataArr[i+1:]...)
 			} else if i == len(dataArr) {
 				utils.PrintMsg("error", "the id doesn't exist, try lnk list to see links with its id")
