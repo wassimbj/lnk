@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
@@ -24,13 +25,13 @@ const (
 	limit        = 4
 	separator    = "~~"
 	usage        = `
-lnk <new | list | del> [url]
+lnk <new | list | rm> [url|ID]
 
 	* new <url>: creates a new link
 
 	* list: Lists the saved links
 
-	* del <url>: remove a saved link
+	* rm <ID>: remove a saved link
 
 `
 )
@@ -84,33 +85,36 @@ func main() {
 
 			// like a card
 			color.New(color.CrossedOut, color.FgHiBlack).Println("-----------------------------------------------------------------")
-			color.New(color.Bold, color.FgHiBlue).Printf("\r [%s]", strings.TrimSpace(link))
+			color.New(color.Bold, color.FgHiBlue).Printf("\r %d - %s", i+1, strings.TrimSpace(link))
 			color.New(color.FgHiMagenta, color.Italic).Printf("\n\n * %s \n", title)
 			color.New(color.CrossedOut, color.FgHiBlack).Println("-----------------------------------------------------------------")
 
 		}
 
-	case "del":
+	case "rm":
 		if len(args) <= 1 {
 			utils.PrintMsg("error", "\t %s", invalidNumOfParams.Error())
 			os.Exit(1)
 		}
 
-		link := args[1]
+		linkId := args[1]
 
 		fileContent, _ := ioutil.ReadFile(dataFilePath)
 		// find the link to delete and remove it from the array
 		dataArr := strings.Split(string(fileContent), "\n")
 		for i := 0; i < len(dataArr); i++ {
-			lnk := strings.Split(dataArr[i], separator)
-			if strings.TrimSpace(lnk[0]) == strings.TrimSpace(link) {
+			linkIdInt, _ := strconv.Atoi(linkId)
+			fmt.Println(i, linkIdInt)
+			if i+1 == linkIdInt {
+				fmt.Println("YYY")
 				dataArr = append(dataArr[:i], dataArr[i+1:]...)
+			} else if i == len(dataArr) {
+				utils.PrintMsg("error", "the id doesn't exist, try lnk list to see links with its id")
 			}
 		}
 
 		// re-write the file with the new data
 		newData := strings.Join(dataArr, "\n")
-		fmt.Println(newData)
 		f, _ := utils.OpenFile(dataFilePath, os.O_WRONLY|os.O_TRUNC)
 
 		if err := utils.AppendToFile(f, newData); err != nil {
