@@ -6,21 +6,21 @@
 <p align='center' style='text-align:center'><i>still in development</i></p>
 
 ### Usage
-```bash
-lnk <new | list | del> [url]
 
-	* new <url>: creates a new link		
+```bash
+lnk <new | list | del> [url|ID]
+
+	* new <url>: creates a new link
 
 	* list: Lists the saved links
 
-	* del <url>: remove a saved link
-      
+	* del <ID>: remove a saved link
+
 ```
 
 ### Preview
 
 ![Preview](/static/lnk-usage.gif)
-
 
 ### Download
 
