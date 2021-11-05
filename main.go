@@ -100,11 +100,13 @@ func main() {
 		linkId := args[1]
 
 		fileContent, _ := ioutil.ReadFile(dataFilePath)
+		deletedLink := ""
 		// find the link to delete and remove it from the array
 		dataArr := strings.Split(string(fileContent), "\n")
 		for i := 0; i < len(dataArr); i++ {
 			linkIdInt, _ := strconv.Atoi(linkId)
 			if i+1 == linkIdInt {
+				deletedLink = strings.Split(dataArr[i], separator)[0]
 				dataArr = append(dataArr[:i], dataArr[i+1:]...)
 			} else if i == len(dataArr) {
 				utils.PrintMsg("error", "the id doesn't exist, try lnk list to see links with its id")
@@ -119,13 +121,13 @@ func main() {
 			utils.PrintMsg("error", "Can't delete the link, Error: "+err.Error())
 		}
 
-		utils.PrintMsg("success", "Success link has been removed")
+		utils.PrintMsg("success", "\t Removed ! ["+strings.TrimSpace(deletedLink)+"]")
 
 	case "usage":
 		fmt.Printf("\n %s \n", usage)
 
 	default:
-		utils.PrintMsg("error", "\t %s", invalidSubCmds.Error())
+		utils.PrintMsg("error", "\t", invalidSubCmds.Error())
 		os.Exit(1)
 	}
 

@@ -64,7 +64,7 @@ func GetLinkTitle(url string) (string, int) {
 
 	// fmt.Println("Title: ", title)
 	if title == "" {
-		return "", 202
+		return "title not found", 404
 	}
 
 	idxOfCloseTitle := strings.Index(title, "</title>")
@@ -107,15 +107,13 @@ func PrintMsg(typ string, msg ...interface{}) {
 
 	if typ == "success" {
 		fmt.Print("\n\n")
-		success("---------------------------------------------------------------------")
 		success(msg...)
-		success("---------------------------------------------------------------------")
+		fmt.Print("\n\n")
 		return
 	} else if typ == "error" {
 		fmt.Print("\n\n")
-		error("---------------------------------------------------------------------")
 		error(msg...)
-		error("---------------------------------------------------------------------")
+		fmt.Print("\n\n")
 		return
 	}
 
