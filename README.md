@@ -3,7 +3,6 @@
     <img src="/static/logo.png" width='90px' align='center' style='display:block'/>
 </p>
 <p align='center' style='text-align:center;font-size:20px;'>lnk - Cli tool to save useful links</p>
-<p align='center' style='text-align:center'><i>still in development</i></p>
 
 ### Usage
 
@@ -14,7 +13,7 @@ lnk <new | list | del> [url|ID]
 
 	* list: Lists the saved links
 
-	* del <ID>: remove a saved link
+	* rm <ID>: remove a saved link
 
 ```
 
