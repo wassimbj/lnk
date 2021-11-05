@@ -7,7 +7,7 @@
 ### Usage
 
 ```bash
-lnk <new | list | del> [url|ID]
+lnk <new | list | rm> [url|ID]
 
 	* new <url>: creates a new link
 
