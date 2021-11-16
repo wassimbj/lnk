@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	invalidNumOfParams = errors.New("Expetced at least 2 params")
+	invalidNumOfParams = errors.New("Expected at least 2 params")
 	invalidSubCmds     = errors.New("invalid subcommands")
 	invalidLink        = errors.New("invalid link")
 )
@@ -63,7 +63,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		utils.PrintMsg("success", "\t Success ! Link is saved")
+		utils.PrintMsg("success", "\t Success! Link is saved")
 
 	case "list":
 		f, _ := utils.OpenFile(dataFilePath, os.O_RDONLY)
