@@ -21,9 +21,9 @@ var (
 )
 
 const (
-	dataFileName = "_lnk_data.txt"
+	dataFileName = "_lnk_data.txt" // where your saved links will live
 	limit        = 4
-	separator    = "~~"
+	separator    = "~~" // seperated the link and its description inside the dataFileName
 	usage        = `
 lnk <new | list | rm> [url|ID]
 
@@ -82,10 +82,11 @@ func main() {
 			idxOfSep := strings.Index(scanner.Text(), separator)
 			link := scanner.Text()[0 : idxOfSep-1]
 			title := scanner.Text()[idxOfSep+3:]
+			linkId := i + 1
 
-			// like a card
+			// it's like a card
 			color.New(color.CrossedOut, color.FgHiBlack).Println("-----------------------------------------------------------------")
-			color.New(color.Bold, color.FgHiBlue).Printf("\r %d - %s", i+1, strings.TrimSpace(link))
+			color.New(color.Bold, color.FgHiBlue).Printf("\r %d - %s", linkId, strings.TrimSpace(link))
 			color.New(color.FgHiMagenta, color.Italic).Printf("\n\n * %s \n", title)
 			color.New(color.CrossedOut, color.FgHiBlack).Println("-----------------------------------------------------------------")
 
@@ -101,7 +102,7 @@ func main() {
 
 		fileContent, _ := ioutil.ReadFile(dataFilePath)
 		deletedLink := ""
-		// find the link to delete and remove it from the array
+		// find the link to delete, and remove it from the array
 		dataArr := strings.Split(string(fileContent), "\n")
 		for i := 0; i < len(dataArr); i++ {
 			linkIdInt, _ := strconv.Atoi(linkId)
@@ -121,7 +122,7 @@ func main() {
 			utils.PrintMsg("error", "Can't delete the link, Error: "+err.Error())
 		}
 
-		utils.PrintMsg("success", "\t Removed ! ["+strings.TrimSpace(deletedLink)+"]")
+		utils.PrintMsg("success", "\t Removed! ["+strings.TrimSpace(deletedLink)+"]")
 
 	case "usage":
 		fmt.Printf("\n %s \n", usage)
