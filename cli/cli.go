@@ -14,10 +14,6 @@ import (
 func NewLnk(link, dataFilePath string) error {
 	var title, status = utils.GetLinkTitle(link)
 
-	if status == 404 {
-		return errors.New("404 ERROR, page not found")
-	}
-
 	// if title is not found or something went wrong
 	if status > 202 || title == "" {
 		utils.PrintMsg("error", fmt.Sprintf("Can't get the title, (HTTP ERROR) Status Code: %s", fmt.Sprint(status)+" "+http.StatusText(status)))
